@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 
-const db = require('./db/db.json') ;
+const db = require('./db/db.json');
 const { error } = require('console');
 
 const PORT = 3001;
@@ -31,7 +31,7 @@ app.post('/api/notes', (req, res) => {
     };
     db.push(newNote);
     fs.writeFile(path.join(__dirname, './db/db.json'), JSON.stringify(db), (err) => {
-        if(err) throw err;
+        if (err) throw err;
         res.json(db);
     });
 });
@@ -40,7 +40,7 @@ app.delete('/api/notes/:id', (req, res) => {
     const targetId = req.params.id;
     const filterDb = db.filter(db => db.id !== targetId);
     fs.writeFile(path.join(__dirname, './db/db.json'), JSON.stringify(filterDb), (err) => {
-        if(err) throw err;
+        if (err) throw err;
         res.json(filterDb);
     });
 });
