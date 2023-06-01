@@ -5,7 +5,7 @@ const fs = require('fs');
 const db = require('./db/db.json');
 const { error } = require('console');
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 
 const app = express();
 
@@ -44,3 +44,5 @@ app.delete('/api/notes/:id', (req, res) => {
         res.json(filterDb);
     });
 });
+
+app.listen(PORT, () => console.log('app is running'));
