@@ -23,29 +23,37 @@ app.get('/notes', (req, res) =>
 );
 
 app.get('/api/notes', (req, res) => {
-    res.json(db);
+    fs.readFile(path.join(__dirname, './db/db.json'), "utf-8", (err, data) => {
+    if (err) throw err;
+    res.json(data)});
     console.log('GET request recieved');
 });
 
 app.post('/api/notes', (req, res) => {
+    const randomId = Math.floor(Math.random() * 1000);
     const newNote = {
-        id: db.length - 1,
+        id: randomId,
         title: req.body.title,
         text: req.body.text
     };
     db.push(newNote);
-    fs.writeFile(path.join(__dirname, './db/db.json'), JSON.stringify(db), (err) => {
+    fs.writeFile(path.join(__dirname, './db/db.json'), JSON.stringify(db), "utf-8", (err, data) => {
         if (err) throw err;
-        res.json(db);
+        res.json(data);
     });
 });
 
 app.delete('/api/notes/:id', (req, res) => {
+    console.log(req.params.id);
     const targetId = req.params.id;
-    const filterDb = db.filter(db => db.id !== targetId);
-    fs.writeFile(path.join(__dirname, './db/db.json'), JSON.stringify(filterDb), (err) => {
+    const filterDb = db.filter(db => {
+        console.log(db.id);
+        return db.id != targetId;
+    });
+    console.log(filterDb);
+    fs.writeFile(path.join(__dirname, './db/db.json'), JSON.stringify(filterDb), "utf-8", (err, data) => {
         if (err) throw err;
-        res.json(filterDb);
+        res.json(data);
     });
 });
 
