@@ -24,37 +24,69 @@ app.get('/notes', (req, res) =>
 
 app.get('/api/notes', (req, res) => {
     fs.readFile(path.join(__dirname, './db/db.json'), "utf-8", (err, data) => {
-    if (err) throw err;
-    res.json(data)});
+        if (err) throw err;
+        res.json(data)
+    });
     console.log('GET request recieved');
 });
 
 app.post('/api/notes', (req, res) => {
-    const randomId = Math.floor(Math.random() * 1000);
-    const newNote = {
-        id: randomId,
-        title: req.body.title,
-        text: req.body.text
-    };
-    db.push(newNote);
-    fs.writeFile(path.join(__dirname, './db/db.json'), JSON.stringify(db), "utf-8", (err, data) => {
+    fs.readFile(path.join(__dirname, './db/db.json'), "utf-8", (err, data) => {
         if (err) throw err;
-        res.json(data);
+        const myNotes = JSON.parse(data);
+        const randomId = Math.floor(Math.random() * 1000);
+        const newNote = {
+            id: randomId,
+            title: req.body.title,
+            text: req.body.text
+        };
+        myNotes.push(newNote);
+        fs.writeFile(path.join(__dirname, './db/db.json'), JSON.stringify(myNotes), "utf-8", (err, data) => {
+            if (err) throw err;
+            res.json(data);
+        });
     });
+    // db.push(newNote);
+    // const randomId = Math.floor(Math.random() * 1000);
+    // const newNote = {
+    //     id: randomId,
+    //     title: req.body.title,
+    //     text: req.body.text
+    // };
+    // db.push(newNote);
+    // fs.writeFile(path.join(__dirname, './db/db.json'), JSON.stringify(db), "utf-8", (err, data) => {
+    //     if (err) throw err;
+    //     res.json(data);
+    // });
 });
 
 app.delete('/api/notes/:id', (req, res) => {
     console.log(req.params.id);
     const targetId = req.params.id;
-    const filterDb = db.filter(db => {
-        console.log(db.id);
-        return db.id != targetId;
-    });
-    console.log(filterDb);
-    fs.writeFile(path.join(__dirname, './db/db.json'), JSON.stringify(filterDb), "utf-8", (err, data) => {
+    // const filterDb = db.filter(db => {
+    //     console.log(db.id);
+    //     return db.id != targetId;
+    // });
+    fs.readFile(path.join(__dirname, './db/db.json'), "utf-8", (err, data) => {
         if (err) throw err;
-        res.json(data);
+        // res.json(data)});
+        const myNotes = JSON.parse(data);
+        console.log('GET request recieved');
+        const filterDb = myNotes.filter(db => {
+            console.log(db.id);
+            return db.id != targetId;
+        });
+        console.log(filterDb);
+        fs.writeFile(path.join(__dirname, './db/db.json'), JSON.stringify(filterDb), "utf-8", (err, data) => {
+            if (err) throw err;
+            res.json(data);
+        });
     });
+    // console.log(filterDb);
+    // fs.writeFile(path.join(__dirname, './db/db.json'), JSON.stringify(filterDb), "utf-8", (err, data) => {
+    //     if (err) throw err;
+    //     res.json(data);
+    // });
 });
 
 app.listen(PORT, () => console.log('app is running'));
